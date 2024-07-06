@@ -29,4 +29,8 @@
     <delete id="deleteVideoFile" parameterType="long">
         DELETE FROM video_files WHERE file_id = #{fileId}
     </delete>
+
+    <delete id="deleteVideoFilesByVideoId" parameterType="long">
+        DELETE FROM video_files WHERE video_id = #{videoId}
+    </delete>
 </mapper>

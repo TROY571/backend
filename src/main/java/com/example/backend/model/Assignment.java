@@ -12,6 +12,8 @@ public class Assignment {
     private String description;
     private Timestamp dueDate;
     private Long createdBy;
+    private String assignmentFileUrl;
+    private String assignmentFileName;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }

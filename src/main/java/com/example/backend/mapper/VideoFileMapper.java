@@ -13,4 +13,6 @@ public interface VideoFileMapper {
     void insertVideoFile(VideoFile videoFile);
 
     void deleteVideoFile(Long fileId);
+
+    void deleteVideoFilesByVideoId(Long videoId);
 }

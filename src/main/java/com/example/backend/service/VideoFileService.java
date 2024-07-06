@@ -5,12 +5,10 @@ import com.example.backend.model.VideoFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
 public class VideoFileService {
-
     @Autowired
     private VideoFileMapper videoFileMapper;
 
@@ -23,11 +21,14 @@ public class VideoFileService {
     }
 
     public void insertVideoFile(VideoFile videoFile) {
-        videoFile.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         videoFileMapper.insertVideoFile(videoFile);
     }
 
     public void deleteVideoFile(Long fileId) {
         videoFileMapper.deleteVideoFile(fileId);
+    }
+
+    public void deleteVideoFilesByVideoId(Long videoId) {
+        videoFileMapper.deleteVideoFilesByVideoId(videoId);
     }
 }

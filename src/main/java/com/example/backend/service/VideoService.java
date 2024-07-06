@@ -14,6 +14,9 @@ public class VideoService {
     @Autowired
     private VideoMapper videoMapper;
 
+    @Autowired
+    private VideoFileService videoFileService;
+
     public Video findByVideoId(Long videoId) {
         return videoMapper.findByVideoId(videoId);
     }
@@ -38,6 +41,7 @@ public class VideoService {
     }
 
     public void deleteVideo(Long videoId) {
+        videoFileService.deleteVideoFilesByVideoId(videoId);
         videoMapper.deleteVideo(videoId);
     }
 }
