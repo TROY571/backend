@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.MajorMapper">
+
+    <resultMap id="MajorResultMap" type="com.example.backend.model.Major">
+        <id property="majorId" column="major_id" />
+        <result property="majorName" column="major_name" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <select id="findByMajorId" parameterType="long" resultMap="MajorResultMap">
+        SELECT * FROM majors WHERE major_id = #{majorId}
+    </select>
+
+    <select id="findAllMajors" resultMap="MajorResultMap">
+        SELECT * FROM majors
+    </select>
+
+    <insert id="insertMajor" parameterType="com.example.backend.model.Major" useGeneratedKeys="true" keyProperty="majorId">
+        INSERT INTO majors (major_name, created_at, updated_at)
+        VALUES (#{majorName}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateMajor" parameterType="com.example.backend.model.Major">
+        UPDATE majors
+        SET major_name=#{majorName}, updated_at=#{updatedAt}
+        WHERE major_id=#{majorId}
+    </update>
+
+    <delete id="deleteMajor" parameterType="long">
+        DELETE FROM majors WHERE major_id = #{majorId}
+    </delete>
+</mapper>

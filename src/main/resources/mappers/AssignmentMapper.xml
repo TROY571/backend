@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.AssignmentMapper">
+
+    <resultMap id="AssignmentResultMap" type="com.example.backend.model.Assignment">
+        <id property="assignmentId" column="assignment_id" />
+        <result property="courseId" column="course_id" />
+        <result property="title" column="title" />
+        <result property="description" column="description" />
+        <result property="dueDate" column="due_date" />
+        <result property="createdBy" column="created_by" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <select id="findByAssignmentId" parameterType="long" resultMap="AssignmentResultMap">
+        SELECT * FROM assignments WHERE assignment_id = #{assignmentId}
+    </select>
+
+    <select id="findByCourseId" parameterType="long" resultMap="AssignmentResultMap">
+        SELECT * FROM assignments WHERE course_id = #{courseId}
+    </select>
+
+    <insert id="insertAssignment" parameterType="com.example.backend.model.Assignment" useGeneratedKeys="true" keyProperty="assignmentId">
+        INSERT INTO assignments (course_id, title, description, due_date, created_by, created_at, updated_at)
+        VALUES (#{courseId}, #{title}, #{description}, #{dueDate}, #{createdBy}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateAssignment" parameterType="com.example.backend.model.Assignment">
+        UPDATE assignments
+        SET course_id=#{courseId}, title=#{title}, description=#{description}, due_date=#{dueDate}, updated_at=#{updatedAt}
+        WHERE assignment_id=#{assignmentId}
+    </update>
+
+    <delete id="deleteAssignment" parameterType="long">
+        DELETE FROM assignments WHERE assignment_id = #{assignmentId}
+    </delete>
+</mapper>

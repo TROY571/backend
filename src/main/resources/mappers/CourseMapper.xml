@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.CourseMapper">
+
+    <resultMap id="CourseResultMap" type="com.example.backend.model.Course">
+        <id property="courseId" column="course_id" />
+        <result property="courseName" column="course_name" />
+        <result property="courseDescription" column="course_description" />
+        <result property="majorId" column="major_id" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <select id="findByCourseId" parameterType="long" resultMap="CourseResultMap">
+        SELECT * FROM courses WHERE course_id = #{courseId}
+    </select>
+
+    <select id="findByMajorId" parameterType="long" resultMap="CourseResultMap">
+        SELECT * FROM courses WHERE major_id = #{majorId}
+    </select>
+
+    <select id="findAllCourses" resultMap="CourseResultMap">
+        SELECT * FROM courses
+    </select>
+
+    <insert id="insertCourse" parameterType="com.example.backend.model.Course" useGeneratedKeys="true" keyProperty="courseId">
+        INSERT INTO courses (course_name, course_description, major_id, created_at, updated_at)
+        VALUES (#{courseName}, #{courseDescription}, #{majorId}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateCourse" parameterType="com.example.backend.model.Course">
+        UPDATE courses
+        SET course_name=#{courseName}, course_description=#{courseDescription}, major_id=#{majorId}, updated_at=#{updatedAt}
+        WHERE course_id=#{courseId}
+    </update>
+
+    <delete id="deleteCourse" parameterType="long">
+        DELETE FROM courses WHERE course_id = #{courseId}
+    </delete>
+</mapper>

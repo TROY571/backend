@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.VideoMapper">
+
+    <resultMap id="VideoResultMap" type="com.example.backend.model.Video">
+        <id property="videoId" column="video_id" />
+        <result property="courseId" column="course_id" />
+        <result property="title" column="title" />
+        <result property="description" column="description" />
+        <result property="url" column="url" />
+        <result property="rating" column="rating" />
+        <result property="uploadedBy" column="uploaded_by" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <select id="findByVideoId" parameterType="long" resultMap="VideoResultMap">
+        SELECT * FROM videos WHERE video_id = #{videoId}
+    </select>
+
+    <select id="findByCourseId" parameterType="long" resultMap="VideoResultMap">
+        SELECT * FROM videos WHERE course_id = #{courseId}
+    </select>
+
+    <select id="findAllVideos" resultMap="VideoResultMap">
+        SELECT * FROM videos
+    </select>
+
+    <insert id="insertVideo" parameterType="com.example.backend.model.Video" useGeneratedKeys="true" keyProperty="videoId">
+        INSERT INTO videos (course_id, title, description, url, rating, uploaded_by, created_at, updated_at)
+        VALUES (#{courseId}, #{title}, #{description}, #{url}, #{rating}, #{uploadedBy}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateVideo" parameterType="com.example.backend.model.Video">
+        UPDATE videos
+        SET course_id=#{courseId}, title=#{title}, description=#{description}, url=#{url}, rating=#{rating}, updated_at=#{updatedAt}
+        WHERE video_id=#{videoId}
+    </update>
+
+    <delete id="deleteVideo" parameterType="long">
+        DELETE FROM videos WHERE video_id = #{videoId}
+    </delete>
+
+    <update id="updateAverageRating">
+        UPDATE videos
+        SET rating = #{rating}
+        WHERE video_id = #{videoId}
+    </update>
+</mapper>

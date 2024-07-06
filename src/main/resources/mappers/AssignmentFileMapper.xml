@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.AssignmentFileMapper">
+
+    <resultMap id="AssignmentFileResultMap" type="com.example.backend.model.AssignmentFile">
+        <id property="fileId" column="file_id" />
+        <result property="assignmentId" column="assignment_id" />
+        <result property="fileUrl" column="file_url" />
+        <result property="fileName" column="file_name" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="findByFileId" parameterType="long" resultMap="AssignmentFileResultMap">
+        SELECT * FROM assignment_files WHERE file_id = #{fileId}
+    </select>
+
+    <select id="findByAssignmentId" parameterType="long" resultMap="AssignmentFileResultMap">
+        SELECT * FROM assignment_files WHERE assignment_id = #{assignmentId}
+    </select>
+
+    <insert id="insertAssignmentFile" parameterType="com.example.backend.model.AssignmentFile" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO assignment_files (assignment_id, file_url, file_name, created_at)
+        VALUES (#{assignmentId}, #{fileUrl}, #{fileName}, #{createdAt})
+    </insert>
+
+    <delete id="deleteAssignmentFile" parameterType="long">
+        DELETE FROM assignment_files WHERE file_id = #{fileId}
+    </delete>
+</mapper>

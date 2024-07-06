@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.ForumReplyMapper">
+
+    <resultMap id="ForumReplyResultMap" type="com.example.backend.model.ForumReply">
+        <id property="replyId" column="reply_id" />
+        <result property="topicId" column="topic_id" />
+        <result property="userId" column="user_id" />
+        <result property="replyText" column="reply_text" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="findByReplyId" parameterType="long" resultMap="ForumReplyResultMap">
+        SELECT * FROM forum_replies WHERE reply_id = #{replyId}
+    </select>
+
+    <select id="findByTopicId" parameterType="long" resultMap="ForumReplyResultMap">
+        SELECT * FROM forum_replies WHERE topic_id = #{topicId}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultMap="ForumReplyResultMap">
+        SELECT * FROM forum_replies WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertForumReply" parameterType="com.example.backend.model.ForumReply" useGeneratedKeys="true" keyProperty="replyId">
+        INSERT INTO forum_replies (topic_id, user_id, reply_text, created_at)
+        VALUES (#{topicId}, #{userId}, #{replyText}, #{createdAt})
+    </insert>
+
+    <update id="updateForumReply" parameterType="com.example.backend.model.ForumReply">
+        UPDATE forum_replies
+        SET topic_id=#{topicId}, user_id=#{userId}, reply_text=#{replyText}, created_at=#{createdAt}
+        WHERE reply_id=#{replyId}
+    </update>
+
+    <delete id="deleteForumReply" parameterType="long">
+        DELETE FROM forum_replies WHERE reply_id = #{replyId}
+    </delete>
+</mapper>

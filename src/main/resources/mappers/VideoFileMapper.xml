@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.VideoFileMapper">
+
+    <resultMap id="VideoFileResultMap" type="com.example.backend.model.VideoFile">
+        <id property="fileId" column="file_id" />
+        <result property="videoId" column="video_id" />
+        <result property="fileUrl" column="file_url" />
+        <result property="fileName" column="file_name" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="findByFileId" parameterType="long" resultMap="VideoFileResultMap">
+        SELECT * FROM video_files WHERE file_id = #{fileId}
+    </select>
+
+    <select id="findByVideoId" parameterType="long" resultMap="VideoFileResultMap">
+        SELECT * FROM video_files WHERE video_id = #{videoId}
+    </select>
+
+    <insert id="insertVideoFile" parameterType="com.example.backend.model.VideoFile" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO video_files (video_id, file_url, file_name, created_at)
+        VALUES (#{videoId}, #{fileUrl}, #{fileName}, #{createdAt})
+    </insert>
+
+    <delete id="deleteVideoFile" parameterType="long">
+        DELETE FROM video_files WHERE file_id = #{fileId}
+    </delete>
+</mapper>

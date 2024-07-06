@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.CommentMapper">
+
+    <resultMap id="CommentResultMap" type="com.example.backend.model.Comment">
+        <id property="commentId" column="comment_id" />
+        <result property="videoId" column="video_id" />
+        <result property="userId" column="user_id" />
+        <result property="commentText" column="comment_text" />
+        <result property="parentCommentId" column="parent_comment_id" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="findByCommentId" parameterType="long" resultMap="CommentResultMap">
+        SELECT * FROM comments WHERE comment_id = #{commentId}
+    </select>
+
+    <select id="findByVideoId" parameterType="long" resultMap="CommentResultMap">
+        SELECT * FROM comments WHERE video_id = #{videoId}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultMap="CommentResultMap">
+        SELECT * FROM comments WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertComment" parameterType="com.example.backend.model.Comment" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO comments (video_id, user_id, comment_text, parent_comment_id, created_at)
+        VALUES (#{videoId}, #{userId}, #{commentText}, #{parentCommentId}, #{createdAt})
+    </insert>
+
+    <update id="updateComment" parameterType="com.example.backend.model.Comment">
+        UPDATE comments
+        SET video_id=#{videoId}, user_id=#{userId}, comment_text=#{commentText}, parent_comment_id=#{parentCommentId}, created_at=#{createdAt}
+        WHERE comment_id=#{commentId}
+    </update>
+
+    <delete id="deleteComment" parameterType="long">
+        DELETE FROM comments WHERE comment_id = #{commentId}
+    </delete>
+</mapper>
