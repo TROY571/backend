@@ -17,6 +17,6 @@ public class User {
     private Timestamp updatedAt;
 
     public enum Role {
-        Student, Teacher, Administrator
+        student, teacher, administrator
     }
 }

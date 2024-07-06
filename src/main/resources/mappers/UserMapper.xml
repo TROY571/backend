@@ -30,7 +30,7 @@
         SELECT * FROM users WHERE major_id = #{majorId}
     </select>
 
-    <select id="findByRole" parameterType="string" resultMap="UserResultMap">
+    <select id="findByRole" parameterType="com.example.backend.model.User$Role" resultMap="UserResultMap">
         SELECT * FROM users WHERE role = #{role}
     </select>
 

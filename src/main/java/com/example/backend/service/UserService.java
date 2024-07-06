@@ -4,19 +4,14 @@ import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
 public class UserService {
-
     @Autowired
     private UserMapper userMapper;
 
     public void saveUser(User user) {
-        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         userMapper.insertUser(user);
     }
 
@@ -37,7 +32,6 @@ public class UserService {
     }
 
     public void updateUser(User user) {
-        user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         userMapper.updateUser(user);
     }
 
@@ -61,7 +55,6 @@ public class UserService {
         User user = userMapper.findByUserId(userId);
         if (user != null) {
             user.setUsername(newUsername);
-            user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             userMapper.updateUser(user);
         }
     }
@@ -70,7 +63,6 @@ public class UserService {
         User user = userMapper.findByUserId(userId);
         if (user != null) {
             user.setPassword(newPassword);
-            user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             userMapper.updateUser(user);
         }
     }
@@ -79,7 +71,6 @@ public class UserService {
         User user = userMapper.findByUserId(userId);
         if (user != null) {
             user.setProfileImage(newProfileImage);
-            user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             userMapper.updateUser(user);
         }
     }

@@ -66,9 +66,9 @@ public class UserServiceTest {
     @Test
     public void testFindByRole() {
         List<User> users = List.of(new User(), new User());
-        when(userMapper.findByRole(User.Role.Student)).thenReturn(users);
+        when(userMapper.findByRole(User.Role.student)).thenReturn(users);
 
-        List<User> result = userService.findByRole(User.Role.Student);
+        List<User> result = userService.findByRole(User.Role.student);
         assertEquals(2, result.size());
     }
 
