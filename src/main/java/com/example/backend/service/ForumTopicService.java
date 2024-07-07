@@ -1,18 +1,20 @@
 package com.example.backend.service;
 
+import com.example.backend.mapper.ForumReplyMapper;
 import com.example.backend.mapper.ForumTopicMapper;
+import com.example.backend.model.ForumReply;
 import com.example.backend.model.ForumTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
 public class ForumTopicService {
-
     @Autowired
     private ForumTopicMapper forumTopicMapper;
+
+    @Autowired
+    private ForumReplyMapper forumReplyMapper;
 
     public ForumTopic findByTopicId(Long topicId) {
         return forumTopicMapper.findByTopicId(topicId);
@@ -31,7 +33,6 @@ public class ForumTopicService {
     }
 
     public void insertForumTopic(ForumTopic forumTopic) {
-        forumTopic.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         forumTopicMapper.insertForumTopic(forumTopic);
     }
 
@@ -40,6 +41,12 @@ public class ForumTopicService {
     }
 
     public void deleteForumTopic(Long topicId) {
+        // Delete related forum replies first
+        List<ForumReply> replies = forumReplyMapper.findByTopicId(topicId);
+        for (ForumReply reply : replies) {
+            forumReplyMapper.deleteForumReply(reply.getReplyId());
+        }
+        // Delete the forum topic
         forumTopicMapper.deleteForumTopic(topicId);
     }
 }
