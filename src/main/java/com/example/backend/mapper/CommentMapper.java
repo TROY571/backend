@@ -17,4 +17,6 @@ public interface CommentMapper {
     void updateComment(Comment comment);
 
     void deleteComment(Long commentId);
+
+    List<Comment> findByParentCommentId(Long parentCommentId);
 }

@@ -5,14 +5,11 @@ import com.example.backend.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
-
     @Autowired
     private CommentService commentService;
 
@@ -33,7 +30,6 @@ public class CommentController {
 
     @PostMapping("/")
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
-        comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         commentService.insertComment(comment);
         return ResponseEntity.ok(comment);
     }

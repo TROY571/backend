@@ -26,6 +26,11 @@
         SELECT * FROM comments WHERE user_id = #{userId}
     </select>
 
+    <select id="findByParentCommentId" parameterType="long" resultMap="CommentResultMap">
+        SELECT * FROM comments WHERE parent_comment_id = #{parentCommentId}
+    </select>
+
+
     <insert id="insertComment" parameterType="com.example.backend.model.Comment" useGeneratedKeys="true" keyProperty="commentId">
         INSERT INTO comments (video_id, user_id, comment_text, parent_comment_id, created_at)
         VALUES (#{videoId}, #{userId}, #{commentText}, #{parentCommentId}, #{createdAt})
