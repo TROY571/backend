@@ -4,6 +4,7 @@ import com.example.backend.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -22,4 +23,6 @@ public interface UserMapper {
     void updateUser(User user);
 
     void deleteUser(Long userId);
+
+    List<User> findByRoleAndMajor(Map<String, Object> params);
 }

@@ -43,6 +43,11 @@
         SELECT * FROM users
     </select>
 
+    <select id="findByRoleAndMajor" parameterType="map" resultMap="UserResultMap">
+        SELECT * FROM users WHERE role = #{role} AND major_id = #{majorId}
+    </select>
+
+
     <update id="updateUser" parameterType="com.example.backend.model.User">
         UPDATE users
         SET username=#{username}, password=#{password}, email=#{email}, school_id=#{schoolId}, role=#{role}, profile_image=#{profileImage}, major_id=#{majorId}, updated_at=#{updatedAt}

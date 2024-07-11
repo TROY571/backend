@@ -4,7 +4,10 @@ import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -43,6 +46,13 @@ public class UserService {
         return userMapper.findAllUsers();
     }
 
+    public List<User> findByRoleAndMajor(String role, Long majorId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("role", role);
+        params.put("majorId", majorId);
+        return userMapper.findByRoleAndMajor(params);
+    }
+
     public User login(Long schoolId, String password) {
         User user = userMapper.findBySchoolId(schoolId);
         if (user != null && user.getPassword().equals(password)) {
@@ -74,4 +84,5 @@ public class UserService {
             userMapper.updateUser(user);
         }
     }
+
 }

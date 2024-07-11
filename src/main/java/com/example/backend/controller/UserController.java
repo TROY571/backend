@@ -2,12 +2,15 @@ package com.example.backend.controller;
 
 import com.example.backend.model.User;
 import com.example.backend.service.UserService;
+import com.example.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,6 +18,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
@@ -25,12 +31,23 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam Long schoolId, @RequestParam String password) {
-        User user = userService.login(schoolId, password);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        try {
+            Long schoolId = Long.parseLong(loginRequest.get("schoolId"));
+            String password = loginRequest.get("password");
+
+            User user = userService.login(schoolId, password);
+            if (user != null) {
+                String token = jwtUtil.generateToken(user.getUsername());
+                return ResponseEntity.ok(Map.of("token", token, "userId", user.getUserId(), "userRole", user.getRole().toString()));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid school ID format");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
         }
-        return ResponseEntity.status(401).build(); // Unauthorized
     }
 
     @PostMapping("/{id}/reset-username")
@@ -58,7 +75,12 @@ public class UserController {
 
     @GetMapping("/id/{userId}")
     public ResponseEntity<User> getUserByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.findByUserId(userId));
+        User user = userService.findByUserId(userId);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/")
@@ -74,6 +96,12 @@ public class UserController {
     @GetMapping("/role/{role}")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable User.Role role) {
         return ResponseEntity.ok(userService.findByRole(role));
+    }
+
+    @GetMapping("/role-and-major")
+    public ResponseEntity<List<User>> getUsersByRoleAndMajor(@RequestParam String role, @RequestParam Long majorId) {
+        List<User> users = userService.findByRoleAndMajor(role, majorId);
+        return ResponseEntity.ok(users);
     }
 
     @PutMapping("/{id}")
