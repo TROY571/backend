@@ -3,11 +3,19 @@ package com.example.backend.controller;
 import com.example.backend.model.Video;
 import com.example.backend.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.List;
+
+import static java.nio.file.Files.isReadable;
 
 @RestController
 @RequestMapping("/api/videos")
@@ -32,24 +40,47 @@ public class VideoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Video> createVideo(@RequestBody Video video) {
-        video.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        video.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        videoService.insertVideo(video);
-        return ResponseEntity.ok(video);
+    public ResponseEntity<String> createVideo(
+            @RequestPart("video") Video video,
+            @RequestParam("file") MultipartFile file) {
+        String result = videoService.insertVideo(video, file);
+        if (result.equals("Uploaded successfully")) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.status(400).body(result);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Video> updateVideo(@PathVariable Long id, @RequestBody Video video) {
+    public ResponseEntity<String> updateVideo(
+            @PathVariable Long id,
+            @RequestBody Video video) {
         video.setVideoId(id);
         video.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         videoService.updateVideo(video);
-        return ResponseEntity.ok(video);
+        return ResponseEntity.ok("Video updated successfully");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
         videoService.deleteVideo(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+        try {
+            Path file = Paths.get("uploads").resolve(filename).normalize();
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok().body(resource);
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,12 @@ public class UserController {
             User user = userService.login(schoolId, password);
             if (user != null) {
                 String token = jwtUtil.generateToken(user.getUsername());
-                return ResponseEntity.ok(Map.of("token", token, "userId", user.getUserId(), "userRole", user.getRole().toString()));
+                Map<String, Object> responseBody = new HashMap<>();
+                responseBody.put("token", token);
+                responseBody.put("role", user.getRole().toString());
+                responseBody.put("userId", user.getUserId());
+                responseBody.put("majorId", user.getMajorId()); // Include majorId in response
+                return ResponseEntity.ok(responseBody);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
@@ -103,6 +109,17 @@ public class UserController {
         List<User> users = userService.findByRoleAndMajor(role, majorId);
         return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/username/{userId}")
+    public ResponseEntity<String> getUsernameByUserId(@PathVariable Long userId) {
+        User user = userService.findByUserId(userId);
+        if (user != null) {
+            return ResponseEntity.ok(user.getUsername());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {

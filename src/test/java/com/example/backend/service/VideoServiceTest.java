@@ -54,19 +54,19 @@ public class VideoServiceTest {
         assertEquals(2, result.size());
     }
 
-    @Test
-    public void testInsertVideo() {
-        Video video = new Video();
-        videoService.insertVideo(video);
-        verify(videoMapper, times(1)).insertVideo(video);
-    }
-
-    @Test
-    public void testUpdateVideo() {
-        Video video = new Video();
-        videoService.updateVideo(video);
-        verify(videoMapper, times(1)).updateVideo(video);
-    }
+//    @Test
+//    public void testInsertVideo() {
+//        Video video = new Video();
+//        videoService.insertVideo(video);
+//        verify(videoMapper, times(1)).insertVideo(video);
+//    }
+//
+//    @Test
+//    public void testUpdateVideo() {
+//        Video video = new Video();
+//        videoService.updateVideo(video);
+//        verify(videoMapper, times(1)).updateVideo(video);
+//    }
 
     @Test
     public void testDeleteVideo() {

@@ -2,6 +2,8 @@ package com.example.backend.mapper;
 
 import com.example.backend.model.Video;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Mapper

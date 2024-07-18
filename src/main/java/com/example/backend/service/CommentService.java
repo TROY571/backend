@@ -4,6 +4,8 @@ import com.example.backend.mapper.CommentMapper;
 import com.example.backend.model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -24,6 +26,7 @@ public class CommentService {
     }
 
     public void insertComment(Comment comment) {
+        comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         commentMapper.insertComment(comment);
     }
 
