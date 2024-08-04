@@ -16,7 +16,7 @@ public class CourseService {
     @Autowired
     private VideoService videoService;
     @Autowired
-    private MajorService majorService;
+    private AssignmentService assignmentService;
 
     public Course findByCourseId(Long courseId) {
         return courseMapper.findByCourseId(courseId);
@@ -43,11 +43,12 @@ public class CourseService {
 
     public void deleteCourse(Long courseId) {
         videoService.deleteByCourseId(courseId);
+        assignmentService.deleteByCourseId(courseId);
         courseMapper.deleteCourse(courseId);
     }
 
     public List<Course> findByMajorIdAndTeacherId(Long majorId, Long teacherId) {
-       return courseMapper.findByMajorIdAndTeacherId(majorId,teacherId);
+        return courseMapper.findByMajorIdAndTeacherId(majorId,teacherId);
     }
 
     public List<Course> findByMajorIdAndStudentId(Long majorId, Long studentId) {

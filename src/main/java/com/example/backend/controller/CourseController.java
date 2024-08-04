@@ -54,9 +54,11 @@ public class CourseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course course) {
-        course.setCourseId(id);
-        course.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        courseService.updateCourse(course);
+        Course byCourseId = courseService.findByCourseId(id);
+        byCourseId.setCourseName(course.getCourseName());
+        byCourseId.setCourseDescription(course.getCourseDescription());
+        byCourseId.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        courseService.updateCourse(byCourseId);
         return ResponseEntity.ok(course);
     }
 
