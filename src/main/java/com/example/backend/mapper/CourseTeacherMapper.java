@@ -15,4 +15,8 @@ public interface CourseTeacherMapper {
     void insertCourseTeacher(CourseTeacher courseTeacher);
 
     void deleteCourseTeacher(Long courseTeacherId);
+
+    void deleteByCourseId(Long courseId);
+
+    void deleteByTeacherId(Long teacherId);
 }

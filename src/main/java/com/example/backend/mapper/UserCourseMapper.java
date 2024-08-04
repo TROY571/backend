@@ -15,4 +15,8 @@ public interface UserCourseMapper {
     void insertUserCourse(UserCourse userCourse);
 
     void deleteUserCourse(Long userCourseId);
+
+    void deleteByUserId(Long userId);
+
+    void deleteByCourseId(Long courseId);
 }

@@ -39,4 +39,7 @@
     <delete id="deleteForumReply" parameterType="long">
         DELETE FROM forum_replies WHERE reply_id = #{replyId}
     </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM forum_replies WHERE user_id = #{userId}
+    </delete>
 </mapper>

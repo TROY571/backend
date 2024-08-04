@@ -17,4 +17,10 @@ public interface SubmissionMapper {
     void updateSubmission(Submission submission);
 
     void deleteSubmission(Long submissionId);
+
+    void deleteByUserId(Long studentId);
+
+    List<Submission> findStudentAssignmentId(Long assignmentId, Long studentId);
+
+    void deleteByAssignmentId(Long assignmentId);
 }

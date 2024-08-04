@@ -25,6 +25,9 @@
     <select id="findByCourseId" parameterType="long" resultMap="AssignmentResultMap">
         SELECT * FROM assignments WHERE course_id = #{courseId}
     </select>
+    <select id="findByUserId" parameterType="long" resultMap="AssignmentResultMap">
+        SELECT * FROM assignments WHERE created_by = #{createdBy}
+    </select>
 
     <insert id="insertAssignment" parameterType="com.example.backend.model.Assignment" useGeneratedKeys="true" keyProperty="assignmentId">
         INSERT INTO assignments (course_id, title, description, due_date, created_by, assignment_file_url, assignment_file_name, created_at, updated_at)
@@ -39,6 +42,12 @@
 
     <delete id="deleteAssignment" parameterType="long">
         DELETE FROM assignments WHERE assignment_id = #{assignmentId}
+    </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM assignments WHERE created_by = #{createdBy}
+    </delete>
+    <delete id="deleteByCourseId" parameterType="long">
+        DELETE FROM assignments WHERE course_id = #{courseId}
     </delete>
 
 </mapper>

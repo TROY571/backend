@@ -21,6 +21,14 @@
     <select id="findByMajorId" parameterType="long" resultMap="CourseResultMap">
         SELECT * FROM courses WHERE major_id = #{majorId}
     </select>
+    <select id="findByMajorIdAndTeacherId" parameterType="long" resultMap="CourseResultMap">
+        SELECT c.* FROM courses AS c LEFT JOIN course_teachers AS ct ON ct.course_id = c.course_id
+        WHERE 1=1 AND c.major_id = #{majorId} AND ct.teacher_id = #{teacherId}
+    </select>
+    <select id="findByMajorIdAndStudentId" parameterType="long" resultMap="CourseResultMap">
+        SELECT c.* FROM courses AS c LEFT JOIN user_courses AS uc ON uc.course_id = c.course_id
+        WHERE 1=1 AND c.major_id = #{majorId} AND uc.user_id = #{studentId}
+    </select>
 
     <select id="findAllCourses" resultMap="CourseResultMap">
         SELECT * FROM courses

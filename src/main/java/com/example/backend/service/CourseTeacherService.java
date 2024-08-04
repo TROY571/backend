@@ -30,4 +30,12 @@ public class CourseTeacherService {
     public void deleteCourseTeacher(Long courseTeacherId) {
         courseTeacherMapper.deleteCourseTeacher(courseTeacherId);
     }
+
+    public void deleteByCourseId(Long courseId) {
+        courseTeacherMapper.deleteByCourseId(courseId);
+    }
+
+    public void deleteByUserId(Long teacherId) {//teacher_id
+        courseTeacherMapper.deleteByTeacherId(teacherId);
+    }
 }

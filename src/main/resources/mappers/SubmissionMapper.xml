@@ -20,6 +20,9 @@
     <select id="findBySubmissionId" parameterType="long" resultMap="SubmissionResultMap">
         SELECT * FROM submissions WHERE submission_id = #{submissionId}
     </select>
+    <select id="findByStudentIdANDSubmissionId" parameterType="long" resultMap="SubmissionResultMap">
+        SELECT * FROM submissions WHERE student_id = #{studentId} AND submission_id = #{submissionId}
+    </select>
 
     <select id="findByAssignmentId" parameterType="long" resultMap="SubmissionResultMap">
         SELECT * FROM submissions WHERE assignment_id = #{assignmentId}
@@ -27,6 +30,10 @@
 
     <select id="findByStudentId" parameterType="long" resultMap="SubmissionResultMap">
         SELECT * FROM submissions WHERE student_id = #{studentId}
+    </select>
+
+    <select id="findStudentAssignmentId" parameterType="long" resultMap="SubmissionResultMap">
+        SELECT * FROM submissions WHERE  assignment_id = #{assignmentId} AND student_id = #{studentId}
     </select>
 
     <insert id="insertSubmission" parameterType="com.example.backend.model.Submission" useGeneratedKeys="true" keyProperty="submissionId">
@@ -42,5 +49,11 @@
 
     <delete id="deleteSubmission" parameterType="long">
         DELETE FROM submissions WHERE submission_id = #{submissionId}
+    </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM submissions WHERE student_id = #{studentId}
+    </delete>
+    <delete id="deleteByAssignmentId" parameterType="long">
+        DELETE FROM submissions WHERE assignment_id = #{assignmentId}
     </delete>
 </mapper>

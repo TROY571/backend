@@ -21,4 +21,6 @@ public interface VideoMapper {
     void deleteVideo(Long videoId);
 
     void updateAverageRating(Long videoId, Double rating);
+
+    void deleteByCourseId(Long courseId);
 }

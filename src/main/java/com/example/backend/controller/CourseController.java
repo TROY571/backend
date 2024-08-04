@@ -2,6 +2,8 @@ package com.example.backend.controller;
 
 import com.example.backend.model.Course;
 import com.example.backend.service.CourseService;
+import com.example.backend.service.CourseTeacherService;
+import com.example.backend.service.UserCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,10 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
-
+    @Autowired
+    private UserCourseService userCourseService;
+    @Autowired
+    private CourseTeacherService courseTeacherService;
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.findByCourseId(id));
@@ -31,6 +36,14 @@ public class CourseController {
         return ResponseEntity.ok(courseService.findByMajorId(majorId));
     }
 
+    @GetMapping("/major/{majorId}/{teacherId}")
+    public ResponseEntity<List<Course>> getCoursesByMajorIdAndTeacherId(@PathVariable Long majorId,@PathVariable Long teacherId) {
+        return ResponseEntity.ok(courseService.findByMajorIdAndTeacherId(majorId,teacherId));
+    }
+    @GetMapping("/major/student/{majorId}/{studentId}")
+    public ResponseEntity<List<Course>> getCoursesByMajorIdAndStudentId(@PathVariable Long majorId,@PathVariable Long studentId) {
+        return ResponseEntity.ok(courseService.findByMajorIdAndStudentId(majorId,studentId));
+    }
     @PostMapping("/")
     public ResponseEntity<Course> createCourse(@RequestBody Course course) {
         course.setCreatedAt(new Timestamp(System.currentTimeMillis()));
@@ -49,7 +62,10 @@ public class CourseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+        courseTeacherService.deleteByCourseId(id);
+        userCourseService.deleteByCourseId(id);
         courseService.deleteCourse(id);
+
         return ResponseEntity.ok().build();
     }
 }

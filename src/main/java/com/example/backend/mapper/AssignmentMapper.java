@@ -15,4 +15,10 @@ public interface AssignmentMapper {
     void updateAssignment(Assignment assignment);
 
     void deleteAssignment(Long assignmentId);
+
+    void deleteByUserId(Long createdBy);
+
+    void deleteByCourseId(Long courseId);
+
+    List<Assignment> findByUserId(Long createdBy);
 }

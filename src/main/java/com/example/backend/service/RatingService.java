@@ -59,4 +59,8 @@ public class RatingService {
     private void updateVideoAverageRating(Long videoId, Double averageRating) {
         videoMapper.updateAverageRating(videoId, averageRating);
     }
+
+    public void deleteByUserId(Long userId) {
+        ratingMapper.deleteByUserId(userId);
+    }
 }

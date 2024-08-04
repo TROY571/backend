@@ -13,6 +13,10 @@ public class CourseService {
 
     @Autowired
     private CourseMapper courseMapper;
+    @Autowired
+    private VideoService videoService;
+    @Autowired
+    private MajorService majorService;
 
     public Course findByCourseId(Long courseId) {
         return courseMapper.findByCourseId(courseId);
@@ -38,6 +42,16 @@ public class CourseService {
     }
 
     public void deleteCourse(Long courseId) {
+        videoService.deleteByCourseId(courseId);
         courseMapper.deleteCourse(courseId);
     }
+
+    public List<Course> findByMajorIdAndTeacherId(Long majorId, Long teacherId) {
+       return courseMapper.findByMajorIdAndTeacherId(majorId,teacherId);
+    }
+
+    public List<Course> findByMajorIdAndStudentId(Long majorId, Long studentId) {
+        return courseMapper.findByMajorIdAndStudentId(majorId,studentId);
+    }
+
 }

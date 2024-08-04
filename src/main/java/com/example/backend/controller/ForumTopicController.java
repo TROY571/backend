@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.ForumTopic;
+import com.example.backend.model.ForumTopicDto;
 import com.example.backend.service.ForumTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ForumTopicController {
     }
 
     @GetMapping("/major/{majorId}")
-    public ResponseEntity<List<ForumTopic>> getForumTopicsByMajorId(@PathVariable Long majorId) {
+    public ResponseEntity<List<ForumTopicDto>> getForumTopicsByMajorId(@PathVariable Long majorId) {
         return ResponseEntity.ok(forumTopicService.findByMajorId(majorId));
     }
 

@@ -3,8 +3,14 @@ package com.example.backend.service;
 import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +19,8 @@ import java.util.Map;
 public class UserService {
     @Autowired
     private UserMapper userMapper;
-
+    @Value("${upload.dir}")
+    private String uploadDir;
     public void saveUser(User user) {
         userMapper.insertUser(user);
     }
@@ -77,12 +84,26 @@ public class UserService {
         }
     }
 
-    public void resetProfileImage(Long userId, String newProfileImage) {
-        User user = userMapper.findByUserId(userId);
-        if (user != null) {
-            user.setProfileImage(newProfileImage);
-            userMapper.updateUser(user);
-        }
+    public void resetProfileImage(Long userId,  MultipartFile file) {
+       try {
+           String newProfileImage = uploadFile(file,userId);
+           User user = userMapper.findByUserId(userId);
+           if (user != null) {
+               user.setProfileImage(newProfileImage);
+               userMapper.updateUser(user);
+           }
+       }catch (IOException e) {
+           throw new RuntimeException(e);
+       }
     }
+
+    private String uploadFile(MultipartFile file, Long userId) throws IOException {
+        String fileName = file.getOriginalFilename();
+        String uniqueFileName = fileName.substring(0, fileName.lastIndexOf('.')) + userId + System.currentTimeMillis() + fileName.substring(fileName.lastIndexOf('.'));
+        Path filePath = Paths.get(uploadDir, uniqueFileName);
+        Files.copy(file.getInputStream(), filePath);
+        return filePath.toString().replace("\\", "/");
+    }
+
 
 }

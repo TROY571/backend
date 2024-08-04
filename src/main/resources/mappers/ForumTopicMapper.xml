@@ -18,8 +18,23 @@
         SELECT * FROM forum_topics WHERE topic_id = #{topicId}
     </select>
 
-    <select id="findByMajorId" parameterType="long" resultMap="ForumTopicResultMap">
-        SELECT * FROM forum_topics WHERE major_id = #{majorId}
+    <select id="findByMajorId" parameterType="long" resultType="com.example.backend.model.ForumTopicDto">
+        SELECT
+            ft.topic_id topicId,
+            ft.major_id majorId,
+            ft.user_id userId,
+            ft.topic_title topicTitle,
+            ft.topic_content topicContent,
+            ft.created_at createdAt,
+            u.username,
+            m.major_name as majorName
+        FROM
+            forum_topics AS ft
+                LEFT JOIN users AS u ON ft.user_id = u.user_id
+                LEFT JOIN majors AS m ON ft.major_id = m.major_id AND u.major_id = m.major_id
+        WHERE
+            ft.major_id =#{majorId}
+
     </select>
 
     <select id="findByUserId" parameterType="long" resultMap="ForumTopicResultMap">
@@ -43,5 +58,8 @@
 
     <delete id="deleteForumTopic" parameterType="long">
         DELETE FROM forum_topics WHERE topic_id = #{topicId}
+    </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM forum_topics WHERE user_id = #{userId}
     </delete>
 </mapper>

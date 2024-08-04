@@ -1,8 +1,13 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.Comment;
+import com.example.backend.model.Rating;
 import com.example.backend.model.Video;
+import com.example.backend.service.CommentService;
+import com.example.backend.service.RatingService;
 import com.example.backend.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +28,8 @@ public class VideoController {
 
     @Autowired
     private VideoService videoService;
-
+    @Value("${upload.dir}")
+    private String uploadDir;
     @GetMapping("/{id}")
     public ResponseEntity<Video> getVideoById(@PathVariable Long id) {
         return ResponseEntity.ok(videoService.findByVideoId(id));
@@ -71,7 +77,7 @@ public class VideoController {
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         try {
-            Path file = Paths.get("uploads").resolve(filename).normalize();
+            Path file = Paths.get(uploadDir, filename);
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() && resource.isReadable()) {
@@ -83,4 +89,5 @@ public class VideoController {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
+
 }

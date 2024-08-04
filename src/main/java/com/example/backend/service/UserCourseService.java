@@ -30,4 +30,12 @@ public class UserCourseService {
     public void deleteUserCourse(Long userCourseId) {
         userCourseMapper.deleteUserCourse(userCourseId);
     }
+
+    public void deleteByUserId(Long userId) {
+        userCourseMapper.deleteByUserId(userId);
+    }
+
+    public void deleteByCourseId(Long courseId) {
+        userCourseMapper.deleteByCourseId(courseId);
+    }
 }

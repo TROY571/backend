@@ -17,4 +17,6 @@ public interface ForumReplyMapper {
     void updateForumReply(ForumReply forumReply);
 
     void deleteForumReply(Long replyId);
+
+    void deleteByUserId(Long userId);
 }

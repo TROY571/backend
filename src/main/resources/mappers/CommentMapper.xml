@@ -45,4 +45,12 @@
     <delete id="deleteComment" parameterType="long">
         DELETE FROM comments WHERE comment_id = #{commentId}
     </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM comments WHERE user_id = #{userId}
+    </delete>
+    <delete id="deleteByVideoId" parameterType="long">
+        DELETE FROM comments WHERE video_id = #{videoId}
+    </delete>
+
+
 </mapper>

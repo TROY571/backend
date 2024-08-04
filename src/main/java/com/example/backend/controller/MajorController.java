@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.model.Major;
-import com.example.backend.service.MajorService;
+import com.example.backend.model.*;
+import com.example.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +39,7 @@ public class MajorController {
         major.setMajorId(id);
         major.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         majorService.updateMajor(major);
+
         return ResponseEntity.ok(major);
     }
 

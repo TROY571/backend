@@ -15,4 +15,6 @@ public interface MajorMapper {
     void updateMajor(Major major);
 
     void deleteMajor(Long majorId);
+
+    Major findByMajorName(String majorName);
 }

@@ -34,4 +34,9 @@
     <delete id="deleteMajor" parameterType="long">
         DELETE FROM majors WHERE major_id = #{majorId}
     </delete>
+
+    <select id="findByMajorName" parameterType="String" resultMap="MajorResultMap">
+        SELECT * FROM majors WHERE major_name = #{majorName}
+    </select>
+
 </mapper>

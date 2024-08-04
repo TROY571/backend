@@ -19,4 +19,8 @@ public interface CommentMapper {
     void deleteComment(Long commentId);
 
     List<Comment> findByParentCommentId(Long parentCommentId);
+
+    void deleteByUserId(Long userId);
+
+    void deleteByVideoId(Long videoId);
 }

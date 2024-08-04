@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.mapper.FavoriteMapper">
+
+    <resultMap id="FavoriteResultMap" type="com.example.backend.model.Favorite">
+        <id property="favoriteId" column="favorite_id" />
+        <result property="userId" column="user_id" />
+        <result property="videoId" column="video_id" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="findByFavorId" parameterType="long" resultMap="FavoriteResultMap">
+        SELECT * FROM favorites WHERE favorite_id = #{courseId}
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultType="com.example.backend.model.FavoriteDto">
+        SELECT
+            f.favorite_id as favoriteId,
+            f.video_id as videoId,
+            f.user_id as userId,
+            f.created_at as createdAt,
+            v.title,
+            v.description,
+            v.url
+        FROM
+            favorites AS f
+                INNER JOIN videos AS v ON f.video_id = v.video_id
+        WHERE
+            f.user_id= #{userId}
+
+    </select>
+    <select id="findByVideoIdAndUserId" parameterType="long" resultMap="FavoriteResultMap">
+        SELECT * FROM favorites WHERE user_id = #{userId} AND video_id = #{videoId}
+    </select>
+
+    <insert id="insertFavorite" parameterType="com.example.backend.model.Favorite" useGeneratedKeys="true" keyProperty="favoriteId">
+        INSERT INTO favorites ( user_id, video_id, created_at)
+        VALUES ( #{userId}, #{videoId}, #{createdAt})
+    </insert>
+
+
+    <delete id="deleteFavorite" parameterType="long">
+        DELETE FROM favorites WHERE favorite_id = #{favoriteId}
+    </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM favorites WHERE user_id = #{userId}
+    </delete>
+    <delete id="deleteByVideoId" parameterType="long">
+        DELETE FROM favorites WHERE video_id = #{videoId}
+    </delete>
+</mapper>

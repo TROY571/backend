@@ -1,13 +1,19 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.User;
-import com.example.backend.service.UserService;
-import com.example.backend.util.JwtUtil;
+import com.example.backend.service.*;
+import com.example.backend.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -17,42 +23,81 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserController {
 
+    @Value("${upload.dir}")
+    private String uploadDir;
     @Autowired
     private UserService userService;
-
     @Autowired
-    private JwtUtil jwtUtil;
+    private ForumReplyService forumReplyService;
+    @Autowired
+    private ForumTopicService forumTopicService;
+    @Autowired
+    private UserCourseService userCourseService;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private FavoriteService favoriteService;
+    @Autowired
+    private SubmissionService submissionService;
+    @Autowired
+    private AssignmentService assignmentService;
+    @Autowired
+    private CourseTeacherService courseTeacherService;
+    @Autowired
+    private RatingService ratingService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        userService.saveUser(user);
-        return ResponseEntity.ok(user);
+        try {
+            userService.saveUser(user); // 假设这个方法现在会抛出运行时异常（如 RuntimeException）
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            String errorMessage = "An error occurred while registering the user.";
+            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                errorMessage = "User registration failed. Please check your input or try again later.";
+            }
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
-
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok().build();
+    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        Map<String, String> errorResponse = new HashMap<>();
         try {
             Long schoolId = Long.parseLong(loginRequest.get("schoolId"));
             String password = loginRequest.get("password");
 
             User user = userService.login(schoolId, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getUsername());
+                Map<String, String> payload = new HashMap<>();
+
+
+                payload.put("username", user.getUsername());
+                String token = JWTUtil.createToken(payload);
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("token", token);
                 responseBody.put("role", user.getRole().toString());
                 responseBody.put("userId", user.getUserId());
-                responseBody.put("majorId", user.getMajorId()); // Include majorId in response
+                responseBody.put("majorId", user.getMajorId());
                 return ResponseEntity.ok(responseBody);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+
+                errorResponse.put("error", "Username or password incorrect");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
             }
         } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid school ID format");
+            errorResponse.put("error", "Invalid school ID format");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+            errorResponse.put("error", "An unexpected error occurred");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
@@ -68,10 +113,30 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{id}/reset-profile-image")
-    public ResponseEntity<Void> resetProfileImage(@PathVariable Long id, @RequestParam String newProfileImage) {
-        userService.resetProfileImage(id, newProfileImage);
+    @PostMapping("/{userId}/reset-profile-image")
+    public ResponseEntity<?> resetProfileImage(@PathVariable Long userId, @RequestParam("newProfileImage") MultipartFile file) {
+        try {
+            userService.resetProfileImage(userId, file);
         return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error updating profile image: " + e.getMessage());
+        }
+    }
+    @GetMapping("/img/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+        try {
+            Path file = Paths.get(uploadDir, filename);
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok().body(resource);
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{schoolId}")
@@ -119,19 +184,49 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
+    @GetMapping("/userinfo/{userId}")
+    public ResponseEntity<?> getUserInfoByUserId(@PathVariable Long userId) {
+        User user = userService.findByUserId(userId);
+        if (user != null) {
+            user.setPassword("");
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
         user.setUserId(id);
         user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        userService.updateUser(user);
-        return ResponseEntity.ok(user);
+        try {
+            userService.updateUser(user);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            String errorMessage = "An error occurred while registering the user.";
+            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                errorMessage = "User registration failed. Please check your input or try again later.";
+            }
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        forumReplyService.deleteByUserId(id);
+        forumTopicService.deleteByUserId(id);
+        userCourseService.deleteByUserId(id);
+        commentService.deleteByUserId(id);
+        favoriteService.deleteByUserId(id);
+        submissionService.deleteByUserId(id);
+        assignmentService.deleteByUserId(id);
+        courseTeacherService.deleteByUserId(id);
+        ratingService.deleteByUserId(id);
         userService.deleteUser(id);
+
         return ResponseEntity.ok().build();
     }
 }

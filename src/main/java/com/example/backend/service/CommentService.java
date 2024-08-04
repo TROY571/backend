@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.mapper.CommentMapper;
 import com.example.backend.model.Comment;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,26 @@ public class CommentService {
         for (Comment nestedComment : nestedComments) {
             deleteNestedComments(nestedComment.getCommentId());
             commentMapper.deleteComment(nestedComment.getCommentId());
+        }
+    }
+
+    public void deleteByUserId(Long userId) {
+        List<Comment> comments = commentMapper.findByUserId(userId);
+        handle(comments);
+    }
+
+    public void deleteByVideoId(Long videoId) {
+        handle(findByVideoId(videoId));
+
+    }
+
+    private void handle(List<Comment> comments){
+        for (Comment comment : comments) {
+            List<Comment> byParentCommentId = commentMapper.findByParentCommentId(comment.getCommentId());
+            for (Comment comment1 : byParentCommentId) {
+                commentMapper.deleteComment(comment1.getCommentId());
+            }
+            commentMapper.deleteComment(comment.getCommentId());
         }
     }
 }

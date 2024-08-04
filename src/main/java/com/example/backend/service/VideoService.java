@@ -1,8 +1,10 @@
 package com.example.backend.service;
 
-import com.example.backend.mapper.VideoMapper;
+import com.example.backend.mapper.*;
 import com.example.backend.model.Video;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +20,18 @@ public class VideoService {
 
     @Autowired
     private VideoMapper videoMapper;
+    @Autowired
+    private VideoFileMapper videoFileMapper;
+    @Autowired
+    private CommentService commentServer;
+    @Autowired
+    private RatingMapper ratingMapper;
+    @Autowired
+    private FavoriteMapper favoriteMapper;
 
-    private final String uploadDir = "D:/BPR/backend/uploads";
 
+    @Value("${upload.dir}")
+    private String uploadDir;
     public Video findByVideoId(Long videoId) {
         return videoMapper.findByVideoId(videoId);
     }
@@ -56,15 +67,25 @@ public class VideoService {
         String uniqueFileName = fileName.substring(0, fileName.length() - 4) + userId + System.currentTimeMillis() + ".mp4";
         Path filePath = Paths.get(uploadDir, uniqueFileName);
         Files.copy(file.getInputStream(), filePath);
-        return filePath.toString();
+        return uniqueFileName;
     }
 
     public void updateVideo(Video video) {
         video.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         videoMapper.updateVideo(video);
     }
-
     public void deleteVideo(Long videoId) {
+        commentServer.deleteByVideoId(videoId);
+        ratingMapper.deleteByVideoId(videoId);
+        favoriteMapper.deleteByVideoId(videoId);
+        videoFileMapper.deleteVideoFilesByVideoId(videoId);
         videoMapper.deleteVideo(videoId);
+    }
+
+    public void deleteByCourseId(Long courseId) {
+        List<Video> byCourseId = videoMapper.findByCourseId(courseId);
+        for (Video video : byCourseId) {
+            deleteVideo(video.getVideoId());
+        }
     }
 }

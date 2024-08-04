@@ -17,4 +17,8 @@ public interface RatingMapper {
     void deleteRating(Long ratingId);
 
     Double findAverageRatingByVideoId(Long videoId);
+
+    void deleteByUserId(Long userId);
+
+    void deleteByVideoId(Long videoId);
 }

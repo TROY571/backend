@@ -44,6 +44,10 @@
         DELETE FROM videos WHERE video_id = #{videoId}
     </delete>
 
+    <delete id="deleteByCourseId" parameterType="long">
+        DELETE FROM videos WHERE course_id = #{courseId}
+    </delete>
+
     <update id="updateAverageRating">
         UPDATE videos
         SET rating = #{rating}

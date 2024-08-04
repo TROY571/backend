@@ -4,6 +4,8 @@ import com.example.backend.mapper.ForumReplyMapper;
 import com.example.backend.mapper.ForumTopicMapper;
 import com.example.backend.model.ForumReply;
 import com.example.backend.model.ForumTopic;
+import com.example.backend.model.ForumTopicDto;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,7 +22,7 @@ public class ForumTopicService {
         return forumTopicMapper.findByTopicId(topicId);
     }
 
-    public List<ForumTopic> findByMajorId(Long majorId) {
+    public List<ForumTopicDto> findByMajorId(Long majorId) {
         return forumTopicMapper.findByMajorId(majorId);
     }
 
@@ -48,5 +50,19 @@ public class ForumTopicService {
         }
         // Delete the forum topic
         forumTopicMapper.deleteForumTopic(topicId);
+    }
+
+    public void deleteByUserId(Long id) {
+        val byUserId = forumTopicMapper.findByUserId(id);
+        for (ForumTopic forumTopic : byUserId) {
+            deleteForumTopic(forumTopic.getTopicId());
+        }
+    }
+
+    public void deleteByMajorId(Long majorId) {
+        val byMajorId = forumTopicMapper.findByMajorId(majorId);
+        for (ForumTopicDto forumTopicDto : byMajorId) {
+            deleteForumTopic(forumTopicDto.getTopicId());
+        }
     }
 }

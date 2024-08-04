@@ -31,4 +31,10 @@
     <delete id="deleteCourseTeacher" parameterType="long">
         DELETE FROM course_teachers WHERE course_teacher_id = #{courseTeacherId}
     </delete>
+    <delete id="deleteByCourseId" parameterType="long">
+        DELETE FROM course_teachers WHERE course_id = #{courseId}
+    </delete>
+    <delete id="deleteByTeacherId" parameterType="long">
+        DELETE FROM course_teachers WHERE teacher_id = #{teacherId}
+    </delete>
 </mapper>

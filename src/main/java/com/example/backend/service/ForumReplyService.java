@@ -38,4 +38,8 @@ public class ForumReplyService {
     public void deleteForumReply(Long replyId) {
         forumReplyMapper.deleteForumReply(replyId);
     }
+
+    public void deleteByUserId(Long id) {
+        forumReplyMapper.deleteByUserId(id);
+    }
 }

@@ -35,6 +35,12 @@
     <delete id="deleteRating" parameterType="long">
         DELETE FROM ratings WHERE rating_id = #{ratingId}
     </delete>
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM ratings WHERE user_id = #{userId}
+    </delete>
+    <delete id="deleteByVideoId" parameterType="long">
+        DELETE FROM ratings WHERE video_id = #{videoId}
+    </delete>
 
     <select id="findAverageRatingByVideoId" parameterType="long" resultType="double">
         SELECT AVG(rating) FROM ratings WHERE video_id = #{videoId}
