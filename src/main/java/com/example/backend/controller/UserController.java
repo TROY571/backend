@@ -51,7 +51,7 @@ public class UserController {
         user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         try {
-            userService.saveUser(user); // 假设这个方法现在会抛出运行时异常（如 RuntimeException）
+            userService.saveUser(user);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
             String errorMessage = "An error occurred while registering the user.";
